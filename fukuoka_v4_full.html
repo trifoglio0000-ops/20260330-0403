@@ -1,0 +1,512 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#faf8f5;--card:#fff;--border:#e8e2d9;--text:#2c2420;--muted:#9a8f85;--accent:#c4956a;--al:#f5ede3;--ad:#8b5e3c;--serif:Georgia,serif}
+body{background:var(--bg);font-family:system-ui,sans-serif;color:var(--text)}
+.app{max-width:720px;margin:0 auto;background:var(--bg)}
+.app-header{padding:1.1rem 1.25rem .7rem;border-bottom:1px solid var(--border);background:var(--card)}
+.eyebrow{font-size:10px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:.25rem}
+.app-title{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--text)}
+.app-sub{font-size:11px;color:var(--muted);margin-top:.2rem}
+
+.nav-scroll{overflow-x:auto;background:var(--card);border-bottom:1px solid var(--border);scrollbar-width:none}
+.nav-scroll::-webkit-scrollbar{display:none}
+.nav-bar{display:flex;min-width:max-content}
+.nb{padding:10px 16px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.nb.on{color:var(--ad);border-bottom-color:var(--accent)}
+
+.pane{padding:1.1rem;display:none}
+.pane.on{display:block}
+
+.sec-head{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem;display:flex;align-items:center;gap:8px}
+.sec-head::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Day strip */
+.day-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.1rem}
+.day-pill{padding:5px 12px;font-size:11px;border:1px solid var(--border);border-radius:40px;cursor:pointer;color:var(--muted);background:var(--card);transition:all .15s;line-height:1.4}
+.day-pill.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Stop card */
+.stop-wrap{margin-bottom:.55rem}
+.stop-wrap.drag-over{border-top:2px solid var(--accent)}
+.stop-wrap.dragging{opacity:.3}
+.t-row{display:flex;align-items:center;gap:8px;padding:3px 0 3px 6px}
+.t-icon{width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0}
+.t-text{font-size:11px;color:var(--muted);flex:1}
+.t-edit{font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:6px}
+.t-edit:hover{background:var(--al)}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .12s}
+.sc:hover{border-color:var(--accent);transform:translateY(-1px)}
+.sc-inner{display:flex;align-items:stretch;min-height:86px}
+.sc-img{width:86px;min-height:86px;flex-shrink:0;overflow:hidden;background:var(--al);display:flex;align-items:center;justify-content:center}
+.sc-img img{width:100%;height:100%;object-fit:cover}
+.sc-body{flex:1;padding:9px 11px;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.sc-time{font-size:10px;color:var(--muted);letter-spacing:.03em;margin-bottom:2px}
+.sc-name{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-note{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sc-foot{display:flex;align-items:center;gap:6px;margin-top:7px}
+.map-lnk{font-size:10px;color:var(--ad);text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+.map-lnk:hover{text-decoration:underline}
+.drag-h{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0 6px;cursor:grab;opacity:.25;flex-shrink:0}
+.drag-h span{width:11px;height:1px;background:var(--text);display:block}
+.add-sc-btn{width:100%;padding:10px;border:1px dashed var(--border);border-radius:13px;background:none;cursor:pointer;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:.5rem}
+.add-sc-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--al)}
+
+/* Detail page */
+.dp{display:none;background:var(--bg)}
+.dp-hdr{display:flex;align-items:center;gap:8px;padding:.9rem 1.1rem;border-bottom:1px solid var(--border);background:var(--card)}
+.back-btn{width:30px;height:30px;border:1px solid var(--border);border-radius:50%;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dp-title{flex:1;font-family:var(--serif);font-size:17px;border:none;background:none;color:var(--text);min-width:0}
+.dp-title:focus{outline:none}
+.del-btn-sm{padding:4px 10px;font-size:11px;border:1px solid #e8c4c4;border-radius:20px;background:none;cursor:pointer;color:#c07070}
+.dp-cover{width:100%;height:200px;background:var(--al);overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;position:relative}
+.dp-cover img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+.dp-cover-hint{font-size:11px;color:var(--muted);position:relative;z-index:1}
+.dp-body{padding:1.1rem}
+.fl{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:.9rem}
+.fi-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+.fi{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text);font-family:inherit;font-size:13px}
+.fi:focus{outline:none;border-color:var(--accent)}
+.ft{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text);font-family:inherit;font-size:13px;resize:none;min-height:100px;line-height:1.7}
+.ft:focus{outline:none;border-color:var(--accent)}
+.map-row{display:flex;gap:7px;align-items:center}
+.map-fi{flex:1;padding:8px 11px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text);font-family:inherit;font-size:12px}
+.map-fi:focus{outline:none;border-color:var(--accent)}
+.map-go{font-size:10px;color:var(--ad);text-decoration:none;white-space:nowrap;padding:8px 11px;border:1px solid var(--border);border-radius:9px;background:var(--card)}
+.map-go:hover{background:var(--al);border-color:var(--accent)}
+.tr-sec{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:11px 13px;margin-bottom:.9rem}
+.mode-row{display:flex;gap:7px;margin-bottom:9px}
+.mode-btn{width:42px;height:42px;border:1px solid var(--border);border-radius:9px;background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mode-btn.on{border-color:var(--accent);background:var(--al)}
+.tr-dur{display:flex;gap:7px;align-items:center}
+.tr-dur input{flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:12px;font-family:inherit}
+.tr-dur input:focus{outline:none;border-color:var(--accent)}
+.gmaps-a{padding:7px 11px;font-size:11px;border:1px solid var(--accent);border-radius:8px;background:var(--al);color:var(--ad);cursor:pointer;text-decoration:none;white-space:nowrap}
+.gmaps-a:hover{background:var(--accent);color:#fff}
+.extra-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ex-slot{aspect-ratio:1;border:1px dashed var(--border);border-radius:9px;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--card);position:relative}
+.ex-slot img{width:100%;height:100%;object-fit:cover}
+
+/* Notebook */
+.nb-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1rem}
+.nb-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:1rem;cursor:pointer;transition:border-color .15s,transform .12s;min-height:90px;display:flex;flex-direction:column}
+.nb-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.nb-card-title{font-size:14px;font-weight:500;margin-bottom:.35rem}
+.nb-card-preview{font-size:11px;color:var(--muted);line-height:1.5;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.nb-card-date{font-size:10px;color:var(--muted);margin-top:.5rem;letter-spacing:.04em}
+.add-nb-btn{background:var(--card);border:1px dashed var(--border);border-radius:13px;padding:1rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:90px;color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.add-nb-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--al)}
+.nb-editor-pane{display:none}
+.nb-ed-hdr{display:flex;align-items:center;gap:8px;padding:.9rem 1.1rem;border-bottom:1px solid var(--border);background:var(--card)}
+.nb-ed-title{flex:1;font-family:var(--serif);font-size:17px;border:none;background:none;color:var(--text)}
+.nb-ed-title:focus{outline:none}
+.nb-toolbar{display:flex;gap:4px;flex-wrap:wrap;padding:8px 1.1rem;border-bottom:1px solid var(--border);background:var(--card)}
+.tb-btn{width:30px;height:30px;border:1px solid var(--border);border-radius:7px;background:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;color:var(--text)}
+.tb-btn:hover{background:var(--al);border-color:var(--accent)}
+.nb-content{padding:1.1rem;min-height:300px}
+.nb-content-area{width:100%;min-height:280px;border:none;background:none;color:var(--text);font-family:inherit;font-size:14px;line-height:1.8;resize:none}
+.nb-content-area:focus{outline:none}
+.nb-img-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.nb-img-item{width:80px;height:80px;border-radius:8px;overflow:hidden;cursor:pointer;border:1px solid var(--border);position:relative}
+.nb-img-item img{width:100%;height:100%;object-fit:cover}
+.nb-img-add{width:80px;height:80px;border-radius:8px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;color:var(--muted);background:var(--card)}
+.nb-img-add:hover{border-color:var(--accent);color:var(--accent);background:var(--al)}
+
+/* Flight */
+.fl-card{background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:.75rem}
+.fl-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--al);border-bottom:1px solid var(--border)}
+.fl-route{font-size:15px;font-weight:500;font-family:var(--serif);flex:1}
+.fl-badge{font-size:10px;padding:3px 9px;border-radius:40px;background:var(--accent);color:#fff;letter-spacing:.04em}
+.fl-body{padding:12px 14px}
+.fl-times{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fl-time-blk{text-align:center}
+.fl-time{font-size:22px;font-weight:500;font-family:var(--serif);line-height:1}
+.fl-airport{font-size:11px;color:var(--muted);margin-top:2px}
+.fl-divider{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.fl-line{width:100%;height:1px;background:var(--border);position:relative}
+.fl-plane-icon{color:var(--accent)}
+.fl-dur{font-size:10px;color:var(--muted);letter-spacing:.04em}
+.fl-info{display:flex;gap:1rem;flex-wrap:wrap}
+.fl-info-item{font-size:12px;color:var(--muted)}
+.fl-info-item span{color:var(--text);font-weight:500}
+.fl-actions{display:flex;gap:7px;margin-top:10px}
+.fl-act-btn{padding:5px 12px;font-size:11px;border:1px solid var(--border);border-radius:8px;background:none;cursor:pointer;color:var(--muted)}
+.fl-act-btn:hover{background:var(--al);border-color:var(--accent);color:var(--ad)}
+.add-fl-btn{width:100%;padding:10px;border:1px dashed var(--border);border-radius:13px;background:none;cursor:pointer;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:.5rem}
+.add-fl-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--al)}
+.fl-form{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:.75rem}
+.fl-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.fi-sm{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);font-family:inherit;font-size:12px}
+.fi-sm:focus{outline:none;border-color:var(--accent)}
+.fl-form-row{display:flex;gap:7px;margin-bottom:9px}
+.fl-btns{display:flex;gap:7px;justify-content:flex-end}
+.btn-primary{padding:7px 18px;font-size:12px;border:1px solid var(--accent);border-radius:9px;background:var(--accent);color:#fff;cursor:pointer}
+.btn-sec{padding:7px 14px;font-size:12px;border:1px solid var(--border);border-radius:9px;background:none;color:var(--muted);cursor:pointer}
+
+/* Budget */
+.bud-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:1.1rem}
+.bud-tile{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:11px 13px}
+.bud-tile .tl{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.bud-tile .tv{font-size:19px;font-weight:500;font-family:var(--serif)}
+.bud-bar-bg{height:4px;background:var(--border);border-radius:2px;margin-bottom:4px}
+.bud-bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s}
+.bud-pct{font-size:11px;color:var(--muted);text-align:right;margin-bottom:1.1rem}
+.bud-set{display:flex;align-items:center;gap:9px;margin-bottom:1.1rem}
+.bud-set label{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.exp-wrap{background:var(--card);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:.75rem}
+.exp-row{display:flex;align-items:center;gap:7px;padding:9px 13px;border-bottom:1px solid var(--border)}
+.exp-row:last-child{border-bottom:none}
+.cat-tag{font-size:10px;padding:3px 8px;border-radius:40px;flex-shrink:0}
+.tag-food{background:#faeeda;color:#633806}
+.tag-transport{background:#e6f1fb;color:#0c447c}
+.tag-shopping{background:#fbeaf0;color:#72243e}
+.tag-stay{background:#e1f5ee;color:#085041}
+.tag-other{background:#ede8e1;color:#5f5e5a}
+.exp-desc{flex:1;font-size:13px}
+.exp-amt{font-size:13px;font-weight:500;font-family:var(--serif);white-space:nowrap}
+.exp-del{background:none;border:none;cursor:pointer;font-size:13px;color:var(--muted)}
+.exp-form{display:grid;grid-template-columns:1fr 90px auto auto;gap:6px}
+.exp-form input,.exp-form select{padding:7px 9px;font-size:12px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text);font-family:inherit}
+.exp-form button{padding:7px 12px;font-size:12px;border:1px solid var(--accent);border-radius:9px;background:var(--al);color:var(--ad);cursor:pointer;white-space:nowrap}
+.exp-form button:hover{background:var(--accent);color:#fff}
+
+/* Checklist */
+.cl-sec{margin-bottom:1.5rem}
+.cl-hd{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem;display:flex;justify-content:space-between}
+.cl-list{background:var(--card);border:1px solid var(--border);border-radius:11px;overflow:hidden}
+.cl-item{display:flex;align-items:center;gap:10px;padding:10px 13px;border-bottom:1px solid var(--border)}
+.cl-item:last-child{border-bottom:none}
+.cl-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.cl-lbl{flex:1;font-size:13px;cursor:pointer}
+.cl-lbl.done{text-decoration:line-through;color:var(--muted)}
+.cl-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:12px}
+.add-row{display:flex;gap:7px;margin-top:.65rem}
+.add-row input{flex:1;padding:7px 11px;font-size:13px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text);font-family:inherit}
+.add-row input:focus{outline:none;border-color:var(--accent)}
+.add-row button{padding:7px 14px;font-size:12px;border:1px solid var(--accent);border-radius:9px;background:var(--al);color:var(--ad);cursor:pointer}
+.add-row button:hover{background:var(--accent);color:#fff}
+
+/* Buy list */
+.buy-zone{background:var(--card);border:1px solid var(--border);border-radius:13px;margin-bottom:.9rem;overflow:hidden}
+.buy-zone-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--al)}
+.buy-zone-name{font-size:13px;font-weight:500;color:var(--ad);flex:1;border:none;background:none;font-family:inherit}
+.buy-zone-name:focus{outline:none}
+.del-zone-btn{background:none;border:none;cursor:pointer;font-size:12px;color:var(--muted)}
+.buy-items{padding:10px 14px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.buy-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative}
+.buy-item-img{width:100%;aspect-ratio:1;object-fit:cover;background:var(--al);display:block;cursor:pointer}
+.buy-item-img-ph{width:100%;aspect-ratio:1;background:var(--al);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:20px}
+.buy-item-body{padding:7px 9px}
+.buy-item-name{font-size:12px;font-weight:500;border:none;background:none;width:100%;font-family:inherit;color:var(--text)}
+.buy-item-name:focus{outline:none}
+.buy-item-note{font-size:11px;color:var(--muted);border:none;background:none;width:100%;font-family:inherit;resize:none;min-height:30px;line-height:1.5}
+.buy-item-note:focus{outline:none}
+.buy-item-check{position:absolute;top:6px;right:6px;width:20px;height:20px;accent-color:var(--accent)}
+.add-buy-item{border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;aspect-ratio:1;color:var(--muted);font-size:22px;background:var(--card)}
+.add-buy-item:hover{border-color:var(--accent);color:var(--accent);background:var(--al)}
+.add-zone-btn{width:100%;padding:10px;border:1px dashed var(--border);border-radius:13px;background:none;cursor:pointer;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.add-zone-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--al)}
+</style>
+
+<div class="app" id="app">
+<div class="app-header">
+  <div class="eyebrow">Travel Journal · Japan</div>
+  <div class="app-title">福岡縣 5 日遊</div>
+  <div class="app-sub">2026 · 3/30 — 4/3</div>
+</div>
+<div class="nav-scroll">
+  <div class="nav-bar">
+    <button class="nb on" onclick="nav('flight',this)">航班</button>
+    <button class="nb" onclick="nav('itinerary',this)">行程</button>
+    <button class="nb" onclick="nav('notes',this)">筆記</button>
+    <button class="nb" onclick="nav('budget',this)">記帳</button>
+    <button class="nb" onclick="nav('checklist',this)">準備清單</button>
+    <button class="nb" onclick="nav('buylist',this)">購買清單</button>
+  </div>
+</div>
+
+<div id="pane-flight" class="pane on">
+  <div class="sec-head">我的航班</div>
+  <div id="flights-list"></div>
+  <button class="add-fl-btn" onclick="showFlightForm()">+ 新增航班</button>
+  <div id="flight-form" style="display:none"></div>
+</div>
+
+<div id="pane-itinerary" class="pane">
+  <div class="day-strip" id="day-strip"></div>
+  <div class="sec-head" id="day-head">第 1 天</div>
+  <div id="stops-list"></div>
+  <button class="add-sc-btn" onclick="addStop()">+ 新增景點</button>
+</div>
+
+<div id="pane-notes" class="pane">
+  <div class="sec-head">我的筆記本</div>
+  <div id="nb-grid" class="nb-grid"></div>
+  <div id="nb-editor-pane" class="nb-editor-pane"></div>
+</div>
+
+<div id="pane-budget" class="pane">
+  <div class="bud-set"><label>總預算 TWD</label><input type="number" id="bud-input" placeholder="例：30000" oninput="renderBudget()" style="padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:9px;background:var(--card);color:var(--text);font-family:inherit;width:130px"></div>
+  <div class="bud-grid">
+    <div class="bud-tile"><div class="tl">預算</div><div class="tv" id="b-total">—</div></div>
+    <div class="bud-tile"><div class="tl">已支出</div><div class="tv" id="b-spent">0</div></div>
+    <div class="bud-tile"><div class="tl">剩餘</div><div class="tv" id="b-remain">—</div></div>
+  </div>
+  <div class="bud-bar-bg"><div class="bud-bar-fill" id="b-bar" style="width:0%"></div></div>
+  <div class="bud-pct" id="b-pct">0%</div>
+  <div class="sec-head">支出記錄</div>
+  <div class="exp-wrap" id="exp-wrap"><div class="exp-row"><span class="exp-desc" style="color:var(--muted);font-size:13px">尚無支出</span></div></div>
+  <div class="exp-form">
+    <input type="text" id="e-desc" placeholder="說明" onkeydown="if(event.key==='Enter')addExp()">
+    <input type="number" id="e-amt" placeholder="金額" onkeydown="if(event.key==='Enter')addExp()">
+    <select id="e-cat"><option value="food">餐飲</option><option value="transport">交通</option><option value="shopping">購物</option><option value="stay">住宿</option><option value="other">其他</option></select>
+    <button onclick="addExp()">新增</button>
+  </div>
+</div>
+
+<div id="pane-checklist" class="pane">
+  <div id="cl-prep-wrap" class="cl-sec"></div>
+  <div id="cl-todo-wrap" class="cl-sec"></div>
+</div>
+
+<div id="pane-buylist" class="pane">
+  <div class="sec-head">購買清單</div>
+  <button class="add-zone-btn" onclick="addBuyZone()">+ 新增分區</button>
+  <div id="buy-zones"></div>
+</div>
+
+<div id="detail-pane" class="dp"></div>
+</div>
+
+<script>
+const MODES=[
+  {id:'walk',svg:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><path d="M9 9l3 1.5 3-1.5M10.5 9v5l-2 4M13.5 9v5l2 4"/></svg>'},
+  {id:'car',svg:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="9" width="20" height="9" rx="2"/><path d="M5 9l2-4h10l2 4"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>'},
+  {id:'transit',svg:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M8 17l-2 4M16 17l2 4M4 12h16"/></svg>'},
+  {id:'flight',svg:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16l-8-4V4l-2 1v7L3 16v2l8-2v4l-2 2h4l-2-2v-4l8 2v-2z"/></svg>'}
+];
+const PLACE_IMGS={'舞鶴':'https://images.unsplash.com/photo-1522383225653-ed111181a951?w=200&h=200&fit=crop','桃園':'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200&h=200&fit=crop','天神':'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&h=200&fit=crop','太宰府':'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=200&h=200&fit=crop','竈門':'https://images.unsplash.com/photo-1526139334526-f591a54b477c?w=200&h=200&fit=crop','海之中道':'https://images.unsplash.com/photo-1490750967868-88df5691cc2d?w=200&h=200&fit=crop','Canal':'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=200&h=200&fit=crop','鰻魚':'https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop','Lawson':'https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=200&h=200&fit=crop','福岡':'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=200&h=200&fit=crop'};
+function getImg(name){for(const k in PLACE_IMGS)if(name.includes(k))return PLACE_IMGS[k];return null;}
+
+const DM=[{label:'Day 1',date:'3/30',sub:'抵達'},{label:'Day 2',date:'3/31',sub:'天神'},{label:'Day 3',date:'4/1',sub:'太宰府'},{label:'Day 4',date:'4/2',sub:'博多'},{label:'Day 5',date:'4/3',sub:'返台'}];
+
+let data=[
+  [{time:'12:00',name:'淡大財庫 出發',note:'搭車前往桃園機場，備妥護照',map:'https://maps.google.com/?q=淡水+新北市',img:null,transport:'',mode:'car',extras:[]},
+   {time:'13:50',name:'桃園國際機場',note:'CI116，16:25 起飛',map:'https://maps.app.goo.gl/Nt9',img:null,transport:'飛行 CI116 約 2 小時 10 分',mode:'flight',extras:[]},
+   {time:'19:35',name:'福岡國際機場 抵達',note:'入境 → 取行李 → 取車',map:'https://maps.google.com/?q=福岡国際空港',img:null,transport:'開車 約 50 分',mode:'car',extras:[]},
+   {time:'20:25',name:'Lawson Poplar Ijiri',note:'便利商店補給',map:'https://maps.google.com/?q=Lawson+Ijiri+Fukuoka',img:null,transport:'步行 約 11 分',mode:'walk',extras:[]},
+   {time:'20:46',name:'Wens Sakuragaoka（住宿）',note:'Check-in',map:'https://maps.google.com/?q=Wens+Sakuragaoka',img:null,transport:'',mode:'walk',extras:[]}],
+  [{time:'06:30',name:'出發',note:'',map:'',img:null,transport:'',mode:'car',extras:[]},
+   {time:'07:23',name:'舞鶴公園 賞櫻',note:'3月底滿開，免費入場',map:'https://maps.google.com/?cid=7492788786502814575',img:null,transport:'開車 約 53 分',mode:'car',extras:[]},
+   {time:'08:57',name:'串揚げと小料理 おとん',note:'早午餐',map:'https://maps.google.com/?q=串揚げと小料理の店おとん',img:null,transport:'步行 約 34 分',mode:'walk',extras:[]},
+   {time:'10:05',name:'天神地下街',note:'開放 10:00–20:00',map:'https://maps.google.com/?cid=12006416572707283355',img:null,transport:'開車 約 8 分',mode:'car',extras:[]},
+   {time:'12:12',name:'唐吉訶德 天神本店',note:'帶護照免稅',map:'https://maps.google.com/?q=ドン・キホーテ+福岡天神',img:null,transport:'步行 約 7 分',mode:'walk',extras:[]},
+   {time:'14:26',name:'鰻魚四代目菊川',note:'知名鰻魚飯老店',map:'https://maps.google.com/?q=四代目菊川+中洲+福岡',img:null,transport:'步行 約 14 分',mode:'walk',extras:[]},
+   {time:'16:03',name:'Wens Sakuragaoka 回飯店',note:'',map:'https://maps.google.com/?q=Wens+Sakuragaoka',img:null,transport:'開車 約 37 分',mode:'car',extras:[]}],
+  [{time:'08:00',name:'出發',note:'',map:'',img:null,transport:'',mode:'car',extras:[]},
+   {time:'10:01',name:'寶滿宮 竈門神社',note:'《鬼滅之刃》聖地',map:'https://maps.google.com/?q=宝満宮竈門神社',img:null,transport:'開車 約 1 小時',mode:'car',extras:[]},
+   {time:'12:36',name:'太宰府天滿宮',note:'學問之神，必吃梅枝餅',map:'https://maps.google.com/?cid=13268960937318002327',img:null,transport:'步行 約 35 分',mode:'walk',extras:[]},
+   {time:'14:37',name:'Miffy Oyatsu-do',note:'限定甜點打卡',map:'https://maps.google.com/?q=Miffy+Oyatsu-do+Dazaifu',img:null,transport:'步行 約 1 分',mode:'walk',extras:[]},
+   {time:'16:13',name:'Wens Sakuragaoka 回飯店',note:'',map:'https://maps.google.com/?q=Wens+Sakuragaoka',img:null,transport:'開車 約 36 分',mode:'car',extras:[]}],
+  [{time:'06:30',name:'出發',note:'',map:'',img:null,transport:'',mode:'car',extras:[]},
+   {time:'07:46',name:'海之中道海濱公園',note:'4月初金香花盛開',map:'https://maps.google.com/?cid=13681811987032125839',img:null,transport:'開車 約 1 小時 16 分',mode:'car',extras:[]},
+   {time:'11:25',name:'なじみ食堂',note:'在地午餐',map:'https://maps.google.com/?q=なじみ食堂+福岡',img:null,transport:'開車 約 39 分',mode:'car',extras:[]},
+   {time:'13:26',name:'博多車站 AMU Plaza',note:'伴手禮大本營',map:'https://maps.google.com/?cid=6204142085769849844',img:null,transport:'開車 約 1 小時',mode:'car',extras:[]},
+   {time:'14:41',name:'博多運河城 Canal City',note:'有噴水秀',map:'https://maps.google.com/?cid=16207815243977726417',img:null,transport:'步行 約 15 分',mode:'walk',extras:[]},
+   {time:'16:48',name:'櫛田神社',note:'博多最古老神社',map:'https://maps.google.com/?cid=11639954002556587428',img:null,transport:'開車 約 7 分',mode:'car',extras:[]},
+   {time:'17:37',name:'警固神社',note:'天神小神社',map:'https://maps.google.com/?cid=1881019903102865317',img:null,transport:'步行 約 19 分',mode:'walk',extras:[]},
+   {time:'18:43',name:'LOPIA 博多',note:'超市掃貨',map:'https://maps.google.com/?q=LOPIA+博多',img:null,transport:'步行 約 36 分',mode:'walk',extras:[]},
+   {time:'20:20',name:'Wens Sakuragaoka 回飯店',note:'',map:'https://maps.google.com/?q=Wens+Sakuragaoka',img:null,transport:'開車 約 37 分',mode:'car',extras:[]}],
+  [{time:'07:08',name:'Wens Sakuragaoka 退房',note:'',map:'https://maps.google.com/?q=Wens+Sakuragaoka',img:null,transport:'',mode:'car',extras:[]},
+   {time:'09:00',name:'福岡國際機場 Check-in',note:'CI111，11:00 起飛',map:'https://maps.google.com/?q=福岡国際空港',img:null,transport:'開車 約 52 分',mode:'car',extras:[]},
+   {time:'12:35',name:'桃園國際機場 抵達',note:'入境',map:'https://maps.app.goo.gl/Nt9',img:null,transport:'飛行 CI111 約 2 小時 35 分',mode:'flight',extras:[]},
+   {time:'14:27',name:'回淡水 到家',note:'旅程結束',map:'https://maps.google.com/?q=淡水+新北市',img:null,transport:'約 52 分',mode:'car',extras:[]}]
+];
+
+let checks={
+  prep:{title:'行前準備',items:['護照（6個月以上有效）','國際駕照 + 台灣駕照','租車確認信','住宿確認信','機票 CI116/CI111','旅遊平安險','日幣現金','SIM 卡/國際漫遊','行動電源','充電器+轉接頭（110V A型）'].map(t=>({text:t,done:false}))},
+  todo:{title:'待確認事項',items:['確認 Wens Sakuragaoka 停車位','太宰府天滿宮是否需預約','Canal City 噴水秀時段','確認海之中道 4/2 有開放','唐吉訶德免稅門檻'].map(t=>({text:t,done:false}))}
+};
+
+let flights=[
+  {airline:'China Airlines',num:'CI116',from:'TPE',to:'FUK',dep:'16:25',arr:'19:35',date:'2026/3/30',cls:'Economy',note:'桃園 → 福岡'},
+  {airline:'China Airlines',num:'CI111',from:'FUK',to:'TPE',dep:'11:00',arr:'12:35',date:'2026/4/3',cls:'Economy',note:'福岡 → 桃園'}
+];
+
+let notebooks=[
+  {title:'旅行回憶',content:'這次福岡之旅真的很期待！\n\n計劃了很久，終於要出發了。',imgs:[],date:'2026/3/20'},
+  {title:'美食清單',content:'一蘭拉麵\n一風堂\n鰻魚四代目菊川\n太宰府梅枝餅\n明太子',imgs:[],date:'2026/3/22'}
+];
+
+let buyZones=[
+  {name:'唐吉訶德／藥妝',items:[{name:'龍角散護喉糖',note:'多買幾盒',img:null,done:false},{name:'肌研玻尿酸化妝水',note:'',img:null,done:false}]},
+  {name:'太宰府 伴手禮',items:[{name:'梅枝餅',note:'現買現吃',img:null,done:false}]}
+];
+
+let expenses=[];
+let curDay=0,curDetailDay=null,curDetailIdx=null,dragSrc=null,curPane='flight';
+
+function nav(pane,btn){
+  curPane=pane;
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pane-'+pane).classList.add('on');
+  document.getElementById('detail-pane').style.display='none';
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  if(pane==='itinerary'){buildDayStrip();renderStops();}
+  if(pane==='checklist')renderAllCL();
+  if(pane==='budget')renderBudget();
+  if(pane==='notes')renderNotebooks();
+  if(pane==='buylist')renderBuyZones();
+  if(pane==='flight')renderFlights();
+}
+
+function modeIcon(id){const m=MODES.find(x=>x.id===id);return m?m.svg:MODES[1].svg;}
+
+function buildDayStrip(){
+  document.getElementById('day-strip').innerHTML=DM.map((m,i)=>`<button class="day-pill${i===curDay?' on':''}" onclick="switchDay(${i})">${m.label}<br><span style="font-size:9px;opacity:.7">${m.sub}</span></button>`).join('');
+}
+function switchDay(i){curDay=i;buildDayStrip();const m=DM[i];document.getElementById('day-head').textContent=`${m.label} · ${m.date} — ${m.sub}`;renderStops();}
+
+function renderStops(){
+  const c=document.getElementById('stops-list');c.innerHTML='';
+  data[curDay].forEach((_,i)=>c.appendChild(makeStop(i)));
+}
+function makeStop(i){
+  const s=data[curDay][i];const imgSrc=s.img||getImg(s.name);
+  const w=document.createElement('div');w.className='stop-wrap';w.dataset.idx=i;
+  if(i>0&&s.transport){
+    const tr=document.createElement('div');tr.className='t-row';
+    tr.innerHTML=`<div class="t-icon">${modeIcon(s.mode)}</div><span class="t-text">${s.transport}</span><button class="t-edit" onclick="openDetail(${curDay},${i});event.stopPropagation()">編輯</button>`;
+    w.appendChild(tr);
+  }
+  const card=document.createElement('div');card.className='sc';
+  card.innerHTML=`<div style="display:flex;align-items:center"><div class="drag-h" draggable="true"><span></span><span></span><span></span></div><div class="sc-inner" style="flex:1"><div class="sc-img">${imgSrc?`<img src="${imgSrc}" alt="" onerror="this.style.display='none'">`:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`}</div><div class="sc-body"><div class="sc-time">${s.time}</div><div class="sc-name">${s.name}</div><div class="sc-note">${s.note||'點擊新增筆記...'}</div><div class="sc-foot">${s.map?`<a class="map-lnk" href="${s.map}" target="_blank"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Google Maps で開く</a>`:''}</div></div></div></div>`;
+  card.addEventListener('click',()=>openDetail(curDay,i));
+  const dh=card.querySelector('.drag-h');
+  dh.addEventListener('dragstart',e=>{dragSrc=i;w.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.stopPropagation();});
+  dh.addEventListener('dragend',()=>{w.classList.remove('dragging');document.querySelectorAll('.stop-wrap').forEach(x=>x.classList.remove('drag-over'));});
+  w.addEventListener('dragover',e=>{e.preventDefault();w.classList.add('drag-over');});
+  w.addEventListener('dragleave',()=>w.classList.remove('drag-over'));
+  w.addEventListener('drop',e=>{e.preventDefault();w.classList.remove('drag-over');if(dragSrc!==null&&dragSrc!==i){const[item]=data[curDay].splice(dragSrc,1);data[curDay].splice(i,0,item);dragSrc=null;renderStops();}});
+  w.appendChild(card);return w;
+}
+function addStop(){data[curDay].push({time:'',name:'新景點',note:'',map:'',img:null,transport:'',mode:'car',extras:[]});renderStops();openDetail(curDay,data[curDay].length-1);}
+function openDetail(day,idx){
+  curDetailDay=day;curDetailIdx=idx;
+  const s=data[day][idx];const dp=document.getElementById('detail-pane');
+  dp.style.display='block';document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  const imgSrc=s.img||getImg(s.name)||'';
+  const modesHtml=MODES.map(m=>`<button class="mode-btn${s.mode===m.id?' on':''}" onclick="setMode('${m.id}',this)">${m.svg}</button>`).join('');
+  const exSlots=Array(3).fill(0).map((_,ei)=>`<div class="ex-slot" onclick="triggerEx(${ei})">${s.extras[ei]?`<img src="${s.extras[ei]}" alt="">`:'<span style="font-size:20px;color:var(--muted)">+</span>'}<input type="file" id="ex-${ei}" accept="image/*" style="display:none" onchange="uploadEx(event,${ei})"></div>`).join('');
+  dp.innerHTML=`<div class="dp-hdr"><button class="back-btn" onclick="closeDetail()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg></button><input class="dp-title" value="${s.name}" oninput="data[${day}][${idx}].name=this.value"><button class="del-btn-sm" onclick="deleteStop(${day},${idx})">刪除</button></div>
+  <div class="dp-cover" onclick="triggerMainImg()">${imgSrc?`<img src="${imgSrc}" id="dp-main-img" alt="">`:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span class="dp-cover-hint">點擊上傳封面圖片</span>'}<input type="file" id="main-file" accept="image/*" style="display:none" onchange="uploadMain(event)"></div>
+  <div class="dp-body"><div class="fl" style="margin-bottom:.9rem"><div><div class="fi-label">時間</div><input class="fi" value="${s.time}" oninput="data[${day}][${idx}].time=this.value"></div><div><div class="fi-label">景點名稱</div><input class="fi" value="${s.name}" oninput="data[${day}][${idx}].name=this.value"></div></div>
+  <div style="margin-bottom:.9rem"><div class="fi-label">筆記 / 備註</div><textarea class="ft" oninput="data[${day}][${idx}].note=this.value;autoH(this)">${s.note}</textarea></div>
+  <div style="margin-bottom:.9rem"><div class="fi-label">Google Maps 連結</div><div class="map-row"><input class="map-fi" id="map-url" value="${s.map}" placeholder="貼上連結" oninput="data[${day}][${idx}].map=this.value;document.getElementById('map-go-lnk').href=this.value"><a class="map-go" id="map-go-lnk" href="${s.map}" target="_blank">Google Maps で開く</a></div></div>
+  <div style="margin-bottom:.9rem"><div class="fi-label">交通方式</div><div class="tr-sec"><div class="mode-row" id="mode-row">${modesHtml}</div><div class="tr-dur"><input type="text" id="tr-text" value="${s.transport}" placeholder="例：開車 約 15 分" oninput="data[${day}][${idx}].transport=this.value"><a class="gmaps-a" href="https://maps.google.com/maps/dir/" target="_blank">Google Maps 路線</a></div></div></div>
+  <div><div class="fi-label">更多圖片</div><div class="extra-grid">${exSlots}</div></div></div>`;
+}
+function setMode(id,btn){if(curDetailDay===null)return;data[curDetailDay][curDetailIdx].mode=id;document.querySelectorAll('#mode-row .mode-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function triggerMainImg(){document.getElementById('main-file').click();}
+function uploadMain(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{data[curDetailDay][curDetailIdx].img=ev.target.result;const cv=document.querySelector('.dp-cover');cv.innerHTML=`<img src="${ev.target.result}" id="dp-main-img" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover"><input type="file" id="main-file" accept="image/*" style="display:none" onchange="uploadMain(event)">`;cv.onclick=triggerMainImg;};r.readAsDataURL(f);}
+function triggerEx(ei){document.getElementById(`ex-${ei}`).click();}
+function uploadEx(e,ei){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{while(data[curDetailDay][curDetailIdx].extras.length<=ei)data[curDetailDay][curDetailIdx].extras.push(null);data[curDetailDay][curDetailIdx].extras[ei]=ev.target.result;const slot=document.querySelectorAll('.ex-slot')[ei];if(slot)slot.innerHTML=`<img src="${ev.target.result}" alt=""><input type="file" id="ex-${ei}" accept="image/*" style="display:none" onchange="uploadEx(event,${ei})">`;};r.readAsDataURL(f);}
+function autoH(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
+function closeDetail(){document.getElementById('detail-pane').style.display='none';document.getElementById('pane-'+curPane).classList.add('on');if(curPane==='itinerary'){buildDayStrip();renderStops();}}
+function deleteStop(day,idx){if(data[day].length<=1)return;data[day].splice(idx,1);closeDetail();}
+
+function renderFlights(){
+  document.getElementById('flights-list').innerHTML=flights.map((f,i)=>`<div class="fl-card"><div class="fl-hdr"><span class="fl-route">${f.from} → ${f.to}</span><span class="fl-badge">${f.cls}</span></div><div class="fl-body"><div class="fl-times"><div class="fl-time-blk"><div class="fl-time">${f.dep}</div><div class="fl-airport">${f.from}</div></div><div class="fl-divider"><div class="fl-plane-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16l-8-4V4l-2 1v7L3 16v2l8-2v4l-2 2h4l-2-2v-4l8 2v-2z"/></svg></div><div class="fl-line"></div><div class="fl-dur">${f.airline} ${f.num}</div></div><div class="fl-time-blk" style="text-align:right"><div class="fl-time">${f.arr}</div><div class="fl-airport">${f.to}</div></div></div><div class="fl-info"><span class="fl-info-item">日期：<span>${f.date}</span></span>${f.note?`<span class="fl-info-item">備註：<span>${f.note}</span></span>`:''}</div><div class="fl-actions"><button class="fl-act-btn" onclick="editFlight(${i})">編輯</button><button class="fl-act-btn" onclick="delFlight(${i})">刪除</button></div></div></div>`).join('');
+}
+function showFlightForm(f,idx){
+  const isEdit=idx!==undefined;
+  const ff=f||{airline:'',num:'',from:'',to:'',dep:'',arr:'',date:'',cls:'Economy',note:''};
+  document.getElementById('flight-form').style.display='block';
+  document.getElementById('flight-form').innerHTML=`<div class="fl-form"><div class="sec-head">${isEdit?'編輯航班':'新增航班'}</div><div class="fl-form-grid"><div><div class="fi-label">航空公司</div><input class="fi-sm" id="ff-airline" value="${ff.airline}" placeholder="例：China Airlines"></div><div><div class="fi-label">航班號</div><input class="fi-sm" id="ff-num" value="${ff.num}" placeholder="例：CI116"></div><div><div class="fi-label">出發地（IATA）</div><input class="fi-sm" id="ff-from" value="${ff.from}" placeholder="例：TPE"></div><div><div class="fi-label">目的地（IATA）</div><input class="fi-sm" id="ff-to" value="${ff.to}" placeholder="例：FUK"></div><div><div class="fi-label">起飛時間</div><input class="fi-sm" id="ff-dep" value="${ff.dep}" placeholder="例：16:25"></div><div><div class="fi-label">抵達時間</div><input class="fi-sm" id="ff-arr" value="${ff.arr}" placeholder="例：19:35"></div></div><div class="fl-form-row"><div style="flex:1"><div class="fi-label">日期</div><input class="fi-sm" id="ff-date" value="${ff.date}" placeholder="例：2026/3/30"></div><div style="flex:1;margin-left:9px"><div class="fi-label">艙等</div><select class="fi-sm" id="ff-cls"><option${ff.cls==='Economy'?' selected':''}>Economy</option><option${ff.cls==='Business'?' selected':''}>Business</option><option${ff.cls==='First'?' selected':''}>First</option></select></div></div><div style="margin-bottom:9px"><div class="fi-label">備註</div><input class="fi-sm" id="ff-note" value="${ff.note}" placeholder="備註說明"></div><div class="fl-btns"><button class="btn-sec" onclick="document.getElementById('flight-form').style.display='none'">取消</button><button class="btn-primary" onclick="saveFlight(${isEdit?idx:'null'})">${isEdit?'儲存':'新增'}</button></div></div>`;
+}
+function editFlight(i){showFlightForm(flights[i],i);}
+function saveFlight(idx){
+  const f={airline:document.getElementById('ff-airline').value,num:document.getElementById('ff-num').value,from:document.getElementById('ff-from').value,to:document.getElementById('ff-to').value,dep:document.getElementById('ff-dep').value,arr:document.getElementById('ff-arr').value,date:document.getElementById('ff-date').value,cls:document.getElementById('ff-cls').value,note:document.getElementById('ff-note').value};
+  if(idx===null||idx==='null')flights.push(f);else flights[idx]=f;
+  document.getElementById('flight-form').style.display='none';renderFlights();
+}
+function delFlight(i){flights.splice(i,1);renderFlights();}
+
+function renderNotebooks(){
+  const g=document.getElementById('nb-grid');
+  const list=notebooks.slice(0,6);
+  let h=list.map((nb,i)=>`<div class="nb-card" onclick="openNb(${i})"><div class="nb-card-title">${nb.title}</div><div class="nb-card-preview">${nb.content.replace(/\n/g,' ')}</div><div class="nb-card-date">${nb.date}</div></div>`).join('');
+  if(notebooks.length<6)h+=`<button class="add-nb-btn" onclick="addNotebook()"><span style="font-size:22px;color:var(--muted)">+</span><span>新增筆記本</span></button>`;
+  g.innerHTML=h;
+  document.getElementById('nb-editor-pane').style.display='none';
+}
+function addNotebook(){
+  if(notebooks.length>=6)return;
+  notebooks.push({title:'新筆記本',content:'',imgs:[],date:new Date().toLocaleDateString('zh-TW')});
+  openNb(notebooks.length-1);
+}
+function openNb(i){
+  const nb=notebooks[i];
+  document.getElementById('nb-grid').style.display='none';
+  const ep=document.getElementById('nb-editor-pane');ep.style.display='block';
+  const imgs=nb.imgs.map((src,ei)=>`<div class="nb-img-item" onclick="removeNbImg(${i},${ei})"><img src="${src}" alt=""></div>`).join('');
+  ep.innerHTML=`<div class="nb-ed-hdr"><button class="back-btn" onclick="closeNb()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg></button><input class="nb-ed-title" value="${nb.title}" oninput="notebooks[${i}].title=this.value"><button class="del-btn-sm" onclick="deleteNb(${i})">刪除</button></div>
+  <div class="nb-toolbar"><button class="tb-btn" onclick="fmt('bold')" title="粗體"><b>B</b></button><button class="tb-btn" onclick="fmt('italic')" title="斜體"><i>I</i></button><button class="tb-btn" onclick="fmt('underline')" title="底線"><u>U</u></button><button class="tb-btn" onclick="fmtBlock('h2')" title="標題">H</button><button class="tb-btn" onclick="fmtBlock('p')" title="段落">P</button><button class="tb-btn" onclick="fmt('insertUnorderedList')" title="清單">•</button><button class="tb-btn" onclick="fmt('insertOrderedList')" title="編號">1.</button><button class="tb-btn" onclick="fmt('justifyLeft')" title="左對齊">≡</button><button class="tb-btn" onclick="fmt('justifyCenter')" title="置中">☰</button><button class="tb-btn" onclick="insertHRule()" title="分隔線">—</button><button class="tb-btn" onclick="triggerNbImg(${i})" title="插入圖片"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button></div>
+  <div class="nb-content"><div class="nb-content-area" id="nb-editor-${i}" contenteditable="true" oninput="notebooks[${i}].content=this.innerHTML" style="outline:none;min-height:260px">${nb.content||'<p>開始記錄...</p>'}</div><div class="nb-img-strip" id="nb-img-strip-${i}">${imgs}<div class="nb-img-add" onclick="triggerNbImg(${i})">+</div></div></div>
+  <input type="file" id="nb-img-file-${i}" accept="image/*" style="display:none" onchange="uploadNbImg(event,${i})">`;
+}
+function fmt(cmd){document.execCommand(cmd,false,null);}
+function fmtBlock(tag){document.execCommand('formatBlock',false,tag);}
+function insertHRule(){document.execCommand('insertHTML',false,'<hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">');}
+function closeNb(){document.getElementById('nb-grid').style.display='';renderNotebooks();}
+function deleteNb(i){notebooks.splice(i,1);closeNb();}
+function triggerNbImg(i){document.getElementById(`nb-img-file-${i}`).click();}
+function uploadNbImg(e,i){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{notebooks[i].imgs.push(ev.target.result);const strip=document.getElementById(`nb-img-strip-${i}`);const div=document.createElement('div');div.className='nb-img-item';div.innerHTML=`<img src="${ev.target.result}" alt="">`;strip.insertBefore(div,strip.lastElementChild);};r.readAsDataURL(f);}
+function removeNbImg(ni,ei){notebooks[ni].imgs.splice(ei,1);openNb(ni);}
+
+function renderAllCL(){['prep','todo'].forEach(renderCL);}
+function renderCL(k){
+  const wrap=document.getElementById('cl-'+k+'-wrap');
+  const items=checks[k].items;const done=items.filter(x=>x.done).length;
+  let h=`<div class="cl-hd"><span>${checks[k].title}</span><span style="font-size:11px;color:var(--muted)">${done}/${items.length}</span></div>`;
+  if(items.length)h+=`<div class="cl-list">${items.map((it,i)=>`<div class="cl-item"><input type="checkbox" id="${k}-${i}" ${it.done?'checked':''} onchange="toggleCL('${k}',${i})"><label for="${k}-${i}" class="cl-lbl${it.done?' done':''}">${it.text}</label><button class="cl-del" onclick="deleteCL('${k}',${i})">&#10005;</button></div>`).join('')}</div>`;
+  h+=`<div class="add-row"><input type="text" id="${k}-inp" placeholder="新增項目..." onkeydown="if(event.key==='Enter')addCL('${k}')"><button onclick="addCL('${k}')">新增</button></div>`;
+  wrap.innerHTML=h;
+}
+function toggleCL(k,i){checks[k].items[i].done=!checks[k].items[i].done;renderCL(k);}
+function deleteCL(k,i){checks[k].items.splice(i,1);renderCL(k);}
+function addCL(k){const inp=document.getElementById(k+'-inp');const v=inp.value.trim();if(!v)return;checks[k].items.push({text:v,done:false});inp.value='';renderCL(k);}
+
+function renderBuyZones(){
+  document.getElementById('buy-zones').innerHTML=buyZones.map((z,zi)=>`<div class="buy-zone"><div class="buy-zone-hdr"><input class="buy-zone-name" value="${z.name}" oninput="buyZones[${zi}].name=this.value"><button class="del-zone-btn" onclick="delZone(${zi})">&#10005; 刪除分區</button></div><div class="buy-items" id="bz-${zi}">${z.items.map((it,ii)=>buyItemHtml(zi,ii,it)).join('')}<div class="add-buy-item" onclick="addBuyItem(${zi})">+</div></div></div>`).join('');
+}
+function buyItemHtml(zi,ii,it){
+  return `<div class="buy-item"><input type="checkbox" class="buy-item-check" ${it.done?'checked':''} onchange="buyZones[${zi}].items[${ii}].done=this.checked">${it.img?`<img class="buy-item-img" src="${it.img}" onclick="triggerBuyImg(${zi},${ii})" alt="">`:`<div class="buy-item-img-ph" onclick="triggerBuyImg(${zi},${ii})"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>`}<div class="buy-item-body"><input class="buy-item-name" value="${it.name}" placeholder="商品名稱" oninput="buyZones[${zi}].items[${ii}].name=this.value"><textarea class="buy-item-note" placeholder="備註..."  oninput="buyZones[${zi}].items[${ii}].note=this.value">${it.note}</textarea></div><input type="file" id="bimg-${zi}-${ii}" accept="image/*" style="display:none" onchange="uploadBuyImg(event,${zi},${ii})"></div>`;
+}
+function triggerBuyImg(zi,ii){document.getElementById(`bimg-${zi}-${ii}`).click();}
+function uploadBuyImg(e,zi,ii){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{buyZones[zi].items[ii].img=ev.target.result;renderBuyZones();};r.readAsDataURL(f);}
+function addBuyItem(zi){buyZones[zi].items.push({name:'新商品',note:'',img:null,done:false});renderBuyZones();}
+function addBuyZone(){buyZones.push({name:'新分區',items:[]});renderBuyZones();}
+function delZone(zi){buyZones.splice(zi,1);renderBuyZones();}
+
+function renderBudget(){
+  const total=parseInt(document.getElementById('bud-input').value)||0;
+  const spent=expenses.reduce((s,e)=>s+e.amt,0);const remain=total-spent;
+  const pct=total>0?Math.min(100,Math.round(spent/total*100)):0;
+  document.getElementById('b-total').textContent=total>0?total.toLocaleString():'—';
+  document.getElementById('b-spent').textContent=spent.toLocaleString();
+  document.getElementById('b-remain').textContent=total>0?remain.toLocaleString():'—';
+  document.getElementById('b-bar').style.width=pct+'%';
+  document.getElementById('b-bar').style.background=pct>90?'#c07070':pct>70?'#c4956a':'var(--accent)';
+  document.getElementById('b-pct').textContent=pct+'%';
+  const cats={food:'餐飲',transport:'交通',shopping:'購物',stay:'住宿',other:'其他'};
+  const wrap=document.getElementById('exp-wrap');
+  if(!expenses.length){wrap.innerHTML='<div class="exp-row"><span class="exp-desc" style="color:var(--muted);font-size:13px">尚無支出</span></div>';return;}
+  wrap.innerHTML=expenses.map((e,i)=>`<div class="exp-row"><span class="cat-tag tag-${e.cat}">${cats[e.cat]}</span><span class="exp-desc">${e.desc}</span><span class="exp-amt">¥${e.amt.toLocaleString()}</span><button class="exp-del" onclick="delExp(${i})">&#10005;</button></div>`).join('');
+}
+function addExp(){const desc=document.getElementById('e-desc').value.trim();const amt=parseInt(document.getElementById('e-amt').value)||0;const cat=document.getElementById('e-cat').value;if(!desc||!amt)return;expenses.push({desc,amt,cat});document.getElementById('e-desc').value='';document.getElementById('e-amt').value='';renderBudget();}
+function delExp(i){expenses.splice(i,1);renderBudget();}
+
+renderFlights();
+</script>
