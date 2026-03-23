@@ -1,0 +1,154 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.cover{width:100%;background:#3d2e1e;position:relative;overflow:hidden;min-height:680px}
+.bg-img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;display:block}
+.bg-overlay{position:absolute;inset:0;background:#3d2e1ecc}
+.bg-overlay-bottom{position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,#2a1e10ee 0%,#2a1e1088 55%,transparent 100%)}
+.cover-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;min-height:680px;padding:0}
+
+.top-bar{width:100%;display:flex;justify-content:space-between;align-items:flex-start;padding:2.2rem 2rem 0}
+.top-tag{font-size:10px;letter-spacing:.22em;color:#d4b896;text-transform:uppercase;line-height:1.8}
+.top-jp{font-family:'Cormorant Garamond',serif;font-size:13px;color:#c9a87c;letter-spacing:.12em;text-align:right;line-height:1.9}
+
+.photo-frame{width:72%;max-width:380px;margin:1.4rem auto 0;position:relative}
+.photo-frame-border{border:1px solid #c9a87c44;padding:6px;border-radius:2px}
+.photo-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;border-radius:1px;background:#5a3e28}
+.photo-sakura{width:100%;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;background:#5a3e28;position:relative;overflow:hidden}
+.photo-year-badge{position:absolute;top:10px;right:10px;font-size:9px;letter-spacing:.18em;color:#d4b896;text-transform:uppercase;border:0.5px solid #c9a87c66;padding:4px 9px;border-radius:1px}
+
+.main-title-block{text-align:center;padding:1.5rem 1.5rem 0}
+.en-title{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,12vw,78px);font-weight:300;letter-spacing:.28em;color:#f0e0cc;line-height:.9;text-transform:uppercase}
+.en-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(12px,2.8vw,16px);letter-spacing:.3em;color:#c9a87c;text-transform:uppercase;margin-top:.7rem;font-weight:400}
+
+.divider-row{display:flex;align-items:center;gap:10px;width:72%;max-width:320px;margin:.9rem auto}
+.div-line{flex:1;height:0.5px;background:#c9a87c55}
+.div-diamond{width:5px;height:5px;background:#c9a87c;transform:rotate(45deg);flex-shrink:0}
+
+.jp-vertical-group{display:flex;justify-content:center;gap:1.2rem;margin:.2rem 0 1rem}
+.jp-col{display:flex;flex-direction:column;align-items:center;gap:2px}
+.jp-char{font-family:'EB Garamond',serif;font-size:clamp(18px,4.5vw,26px);color:#d4b896;line-height:1.5;letter-spacing:.08em}
+.jp-char-sm{font-size:clamp(13px,3vw,17px);color:#b8956a}
+
+.info-row{display:flex;align-items:center;justify-content:center;gap:1.8rem;padding:.5rem 1.5rem 0;flex-wrap:wrap}
+.info-item{text-align:center}
+.info-label{font-size:9px;letter-spacing:.2em;color:#9a7a5a;text-transform:uppercase;margin-bottom:3px}
+.info-value{font-family:'Cormorant Garamond',serif;font-size:clamp(13px,3vw,16px);color:#d4b896;letter-spacing:.1em}
+
+.bottom-section{width:100%;padding:1.2rem 2rem 2rem;text-align:center;margin-top:auto}
+.route-line{font-size:9px;letter-spacing:.28em;color:#9a7a5a;text-transform:uppercase;margin-bottom:.6rem}
+.tagline{font-family:'Cormorant Garamond',serif;font-size:clamp(13px,3.2vw,18px);font-style:italic;color:#c9a87c;letter-spacing:.08em;line-height:1.6}
+.tagline-jp{font-size:10px;letter-spacing:.16em;color:#7a6248;margin-top:.35rem}
+.corner-deco{position:absolute;width:28px;height:28px;border-color:#c9a87c44}
+.corner-tl{top:16px;left:16px;border-top:1px solid;border-left:1px solid}
+.corner-tr{top:16px;right:16px;border-top:1px solid;border-right:1px solid}
+.corner-bl{bottom:16px;left:16px;border-bottom:1px solid;border-left:1px solid}
+.corner-br{bottom:16px;right:16px;border-bottom:1px solid;border-right:1px solid}
+</style>
+
+<div class="cover">
+  <div class="bg-overlay"></div>
+  <div class="bg-overlay-bottom"></div>
+
+  <div class="corner-deco corner-tl"></div>
+  <div class="corner-deco corner-tr"></div>
+  <div class="corner-deco corner-bl"></div>
+  <div class="corner-deco corner-br"></div>
+
+  <div class="cover-inner">
+    <div class="top-bar">
+      <div class="top-tag">Travel Itinerary<br>Vol. 2026</div>
+      <div class="top-jp">福岡県<br>桜の季節</div>
+    </div>
+
+    <div style="margin-top:1.5rem;width:68%;max-width:360px">
+      <div class="photo-frame-border" style="position:relative">
+        <div class="photo-sakura" id="photo-area">
+          <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;top:0;left:0">
+            <rect width="300" height="400" fill="#4a3020"/>
+            <rect width="300" height="400" fill="#3d2812" opacity=".4"/>
+            <ellipse cx="150" cy="380" rx="160" ry="60" fill="#2a1a08" opacity=".8"/>
+            <line x1="90" y1="400" x2="150" y2="180" stroke="#5a3518" stroke-width="8" stroke-linecap="round"/>
+            <line x1="150" y1="180" x2="210" y2="60" stroke="#6b4020" stroke-width="6" stroke-linecap="round"/>
+            <line x1="150" y1="280" x2="80" y2="180" stroke="#5a3518" stroke-width="5" stroke-linecap="round"/>
+            <line x1="150" y1="220" x2="230" y2="160" stroke="#6b4020" stroke-width="4" stroke-linecap="round"/>
+            <line x1="210" y1="60" x2="170" y2="-10" stroke="#6b4020" stroke-width="4" stroke-linecap="round"/>
+            <line x1="210" y1="60" x2="260" y2="20" stroke="#6b4020" stroke-width="3.5" stroke-linecap="round"/>
+            <g opacity=".9">
+              <circle cx="175" cy="48" r="9" fill="#e8b4b8"/><circle cx="175" cy="48" r="5" fill="#f5d0d2"/>
+              <circle cx="162" cy="38" r="7" fill="#dfa0a8"/><circle cx="162" cy="38" r="4" fill="#f0c4c8"/>
+              <circle cx="195" cy="30" r="8" fill="#e8b4b8"/><circle cx="195" cy="30" r="4.5" fill="#f5d0d2"/>
+              <circle cx="215" cy="50" r="7" fill="#dfa0a8"/><circle cx="215" cy="50" r="4" fill="#f0c4c8"/>
+              <circle cx="245" cy="25" r="8" fill="#e8b4b8"/><circle cx="245" cy="25" r="4.5" fill="#f5d0d2"/>
+              <circle cx="260" cy="45" r="6" fill="#dfa0a8"/>
+              <circle cx="75" cy="168" r="8" fill="#e8b4b8"/><circle cx="75" cy="168" r="4.5" fill="#f5d0d2"/>
+              <circle cx="60" cy="185" r="7" fill="#dfa0a8"/>
+              <circle cx="88" cy="188" r="9" fill="#e8b4b8"/><circle cx="88" cy="188" r="5" fill="#f5d0d2"/>
+              <circle cx="232" cy="148" r="8" fill="#e8b4b8"/><circle cx="232" cy="148" r="4.5" fill="#f5d0d2"/>
+              <circle cx="248" cy="160" r="7" fill="#dfa0a8"/>
+              <circle cx="218" cy="158" r="9" fill="#e8b4b8"/>
+            </g>
+            <g opacity=".7">
+              <ellipse cx="40" cy="120" rx="5" ry="7" fill="#e8b4b8" transform="rotate(-20 40 120)"/>
+              <ellipse cx="55" cy="95" rx="4" ry="6" fill="#f5d0d2" transform="rotate(15 55 95)"/>
+              <ellipse cx="130" cy="50" rx="5" ry="7" fill="#e8b4b8" transform="rotate(30 130 50)"/>
+              <ellipse cx="270" cy="90" rx="4" ry="6" fill="#f5d0d2" transform="rotate(-10 270 90)"/>
+              <ellipse cx="25" cy="200" rx="4" ry="6" fill="#e8b4b8" transform="rotate(25 25 200)"/>
+            </g>
+            <rect width="300" height="400" fill="#1a0e06" opacity=".18"/>
+          </svg>
+          <div class="photo-year-badge">Mar — Apr 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-title-block">
+      <div class="en-title">Fukuoka</div>
+      <div class="en-sub">福 岡 県 · Japan</div>
+    </div>
+
+    <div class="divider-row">
+      <div class="div-line"></div>
+      <div class="div-diamond"></div>
+      <div class="div-line"></div>
+    </div>
+
+    <div class="jp-vertical-group">
+      <div class="jp-col">
+        <span class="jp-char">春</span>
+        <span class="jp-char-sm">Haru</span>
+      </div>
+      <div class="jp-col">
+        <span class="jp-char">の</span>
+      </div>
+      <div class="jp-col">
+        <span class="jp-char">旅</span>
+        <span class="jp-char-sm">Tabi</span>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-item">
+        <div class="info-label">Departure</div>
+        <div class="info-value">Mar 30, 2026</div>
+      </div>
+      <div class="div-diamond" style="background:#c9a87c55;margin-top:6px"></div>
+      <div class="info-item">
+        <div class="info-label">Return</div>
+        <div class="info-value">Apr 3, 2026</div>
+      </div>
+      <div class="div-diamond" style="background:#c9a87c55;margin-top:6px"></div>
+      <div class="info-item">
+        <div class="info-label">Days</div>
+        <div class="info-value">5 Days</div>
+      </div>
+    </div>
+
+    <div class="bottom-section">
+      <div class="route-line">Sakuragaoka · Dazaifu · Tenjin · Hakata</div>
+      <div class="tagline">"Cherry blossoms, temple paths<br>& the soul of Kyushu"</div>
+      <div class="tagline-jp">桜舞う季節に、九州の魂を感じる旅へ</div>
+    </div>
+  </div>
+</div>
